@@ -1,6 +1,8 @@
 var webpack = require('webpack');
-var path = require('path');
+var path = require('path'); 
+var glob = require('glob');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+let PurifyCSSPlugin = require('purifycss-webpack');
 var inProduction = (process.env.NODE_ENV === 'production');
 
 module.exports = {
@@ -40,6 +42,13 @@ module.exports = {
 	},
 	plugins: [
 		new ExtractTextPlugin('[name].css'),
+
+		new PurifyCSSPlugin({
+			// Give paths to parse for rules. These should be absolute!
+			paths: glob.sync(path.join(__dirname, 'index.html')),
+			minimize: inProduction
+		}),
+
 
 		new webpack.LoaderOptionsPlugin({
 			minimize: inProduction,
