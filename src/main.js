@@ -1,1 +1,1 @@
-alert('once again change');
+require('./styles.css'); 
