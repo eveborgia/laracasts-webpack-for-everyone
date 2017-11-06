@@ -1,19 +1,20 @@
-var webpack = require('webpack');
-var path = require('path'); 
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var inProduction = (process.env.NODE_ENV === 'production');
-var CleanWebpackPlugin = require('clean-webpack-plugin')
-
+let webpack = require('webpack');
+let path = require('path'); 
+let inProduction = (process.env.NODE_ENV === 'production');
+let BuildManifestPlugin = require('./build/plugins/BuildManifestPlugin');
 
 module.exports = {
 	entry: {
-		main:'./src/main.js', 
-		vendor: ['jquery']
+		main:'./src/main.js'
 	},
+
+
 	output: {
 		path: path.resolve(__dirname, './dist'),
-		filename: '[name].[chunkhash].js'
+		filename: '[name].js'
 	},
+
+
 	module: {
 		rules: [
 			{
@@ -48,24 +49,14 @@ module.exports = {
 		     }
 		]
 	},
+	
 	plugins: [
-		new CleanWebpackPlugin(['dist'], {
-			root: __dirname,
-			verbose:  true,
-			dry:      false,
-		}),
 
 		new webpack.LoaderOptionsPlugin({
-			minimize: inProduction,
+			minimize: inProduction
 		}),
-		function() {
-			this.plugin('done', stats => {
-				require('fs').writeFileSync(
-					path.join(__dirname, 'dist/manifest.json'),
-					JSON.stringify(stats.toJson().assetsByChunkName)
-				);
-		});
-	}
+
+		new BuildManifestPlugin(),
 		  
 	]
 };
